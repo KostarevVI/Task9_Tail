@@ -146,12 +146,12 @@ public class Tail {
             Writer writer = new BufferedWriter(new OutputStreamWriter(
                     new FileOutputStream("./" + arguments.oFile + ".txt"), "Cp1251"));
             for (String fileName : arguments.inputFiles) {
-                writer.write("\n");
                 writer.write(fileName);
                 for (String line : newFilesTexts.get(fileName)) {
-                    writer.write("\n");
+                    writer.write("\r\n");
                     writer.write(line);
                 }
+                writer.flush();
             }
         } else {
             for (String fileName : arguments.inputFiles) {
