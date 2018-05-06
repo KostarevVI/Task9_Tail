@@ -2,12 +2,12 @@ package Tail;
 
 import java.io.*;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.io.IOException;
 import java.util.*;
 
 public class Tail {
+
 
     public static void main(String[] args) throws IOException {
 
@@ -24,56 +24,26 @@ public class Tail {
         Map<String, List<String>> filesTexts = new HashMap<>();
         Map<String, List<String>> newFilesTexts = new HashMap<>();
 
-        if (arguments.numChar == 0 && arguments.numStr == 0 &&
-                arguments.oFile == null && arguments.inputFiles.get(0).equals("")) {
-            System.out.println("Строка пустая");
-            System.out.println("Введите строки в консоль:");
-            System.out.println("Ожидаем ввод с командной строки (для завершения введите end)");
-            consoleRead = scan.nextLine();
-            while (!consoleRead.equalsIgnoreCase("end")) {
-                text.add(consoleRead);
-                consoleRead = scan.nextLine();
-            }
-            text.remove("end");
-            int counter = 0;
-            if (text.isEmpty()) {
-                System.out.println("Ничего не введено");
-                System.exit(0);
-            }
-            Collections.reverse(text);
-            for (String line : text) {
-                if (counter < 10) {
-                    newText.add(line);
-                    counter++;
-                } else {
-                    break;
-                }
-            }
-            Collections.reverse(newText);
-            newFilesTexts.put("From console", newText);
+        if (arguments.numStr < 0 && arguments.numChar < 0) {
+            System.out.println("Аргумент меньше или равен 0");
+            System.exit(1);
         }
 
-        if (arguments.numChar > 0 && arguments.numStr > 0) {
-            System.out.println("Вызваны оба аркумента -c -n (нелья так)");
-            System.exit(0);
+        if (arguments.oFile != null && !new File("./src/test/resources/" + arguments.oFile + ".txt").exists()) {
+            System.out.println("Выходного файла " + arguments.oFile + " не существует в дирректории resources");
+            System.exit(1);
         }
 
-        if (arguments.oFile != null && !new File("./" + arguments.oFile + ".txt").exists()) {
-            System.out.println("Выходного файла " + arguments.oFile + " не существует в корневой дирректории");
-            System.exit(0);
-        }
-
-        if (arguments.inputFiles != null && !arguments.inputFiles.isEmpty() &&
-                (arguments.numStr > 0 || arguments.numChar > 0)) {
+        if (!arguments.inputFiles.contains("")) {
             for (String fileName : arguments.inputFiles) {
-                File myFile = new File("./" + fileName + ".txt");
+                File myFile = new File("./src/test/resources/" + fileName + ".txt");
                 if (!myFile.exists()) {
-                    System.out.println("Входного файла " + fileName + " не существует в корневой дирректории");
-                    System.exit(0);
+                    System.out.println("Входного файла " + fileName + " не существует в дирректории resources");
+                    System.exit(1);
                 }
             }
             for (String fileName : arguments.inputFiles) {
-                File myFile = new File("./" + fileName + ".txt");
+                File myFile = new File("./src/test/resources/" + fileName + ".txt");
                 text = Files.readAllLines(myFile.toPath(), Charset.forName("Cp1251"));
                 filesTexts.put(fileName, text);
             }
@@ -87,10 +57,10 @@ public class Tail {
             text.remove("end");
             if (text.isEmpty()) {
                 System.out.println("Ничего не введено");
-                System.exit(0);
+                System.exit(1);
             }
-            arguments.inputFiles.add("From console");
-            filesTexts.put("From console", text);
+            //arguments.inputFiles.add("");
+            filesTexts.put("", text);
         }
 
         //Действия для кол-ва строк
@@ -98,15 +68,7 @@ public class Tail {
         if (arguments.numStr > 0) {
             for (String fileName : arguments.inputFiles) {
                 Collections.reverse(filesTexts.get(fileName));
-                int counter = 0;
-                for (String line : filesTexts.get(fileName)) {
-                    if (counter < arguments.numStr) {
-                        newText.add(line);
-                        counter++;
-                    } else {
-                        break;
-                    }
-                }
+                newText = filesTexts.get(fileName).subList(0, arguments.numStr);
                 Collections.reverse(newText);
                 newFilesTexts.put(fileName, new ArrayList<>(newText));
                 newText.clear();
@@ -138,23 +100,37 @@ public class Tail {
             }
         }
 
+        //Действие когда ничего не подходит
+
+        if (arguments.numChar == 0 && arguments.numStr == 0) {
+            for (String fileName : arguments.inputFiles) {
+                Collections.reverse(filesTexts.get(fileName));
+                newText = filesTexts.get(fileName).subList(0, 10);
+                Collections.reverse(newText);
+                newFilesTexts.put(fileName, new ArrayList<>(newText));
+                newText.clear();
+            }
+        }
+
         //Вывод
 
         //System.out.println(arguments.numChar + " " + arguments.numStr + " " + arguments.inputFiles);
 
         if (arguments.oFile != null) {
-            Writer writer = new BufferedWriter(new OutputStreamWriter(
-                    new FileOutputStream("./" + arguments.oFile + ".txt"), "Cp1251"));
-            for (String fileName : arguments.inputFiles) {
-                writer.write(fileName);
-                for (String line : newFilesTexts.get(fileName)) {
-                    writer.write("\r\n");
-                    writer.write(line);
+            try (Writer writer = new BufferedWriter(new OutputStreamWriter(
+                    new FileOutputStream("./src/test/resources/" + arguments.oFile + ".txt"),
+                    "Cp1251"))) {
+                for (String fileName : arguments.inputFiles) {
+                    if (arguments.inputFiles.size() > 1)
+                        writer.write(fileName);
+                    for (String line : newFilesTexts.get(fileName)) {
+                        writer.write("\r\n");
+                        writer.write(line);
+                    }
                 }
-                writer.flush();
             }
         } else {
-            for (String fileName : arguments.inputFiles) {
+            for (String fileName : newFilesTexts.keySet()) {
                 if (arguments.inputFiles.size() > 1)
                     System.out.println(fileName);
                 for (String line : newFilesTexts.get(fileName)) {
