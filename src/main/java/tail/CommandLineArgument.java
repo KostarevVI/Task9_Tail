@@ -1,4 +1,4 @@
-package Tail;
+package tail;
 
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineParser;
