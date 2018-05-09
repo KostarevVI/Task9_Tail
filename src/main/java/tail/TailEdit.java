@@ -9,7 +9,7 @@ public class TailEdit {
     private Map<String, List<String>> newFilesTexts = new HashMap<>();
     private CommandLineArgument arguments;
 
-    TailEdit(CommandLineArgument args, Map<String, List<String>> filesTexts){
+    TailEdit(CommandLineArgument args, Map<String, List<String>> filesTexts) {
         this.filesTexts = filesTexts;
         this.arguments = args;
     }
@@ -18,16 +18,16 @@ public class TailEdit {
         return newFilesTexts;
     }
 
-    public void doTailEdit(){
+    public void doTailEdit() {
 
         //Действия для кол-ва строк
 
         if (arguments.numStr > 0) {
             for (String fileName : arguments.inputFiles) {
                 Collections.reverse(filesTexts.get(fileName));
-                if(filesTexts.get(fileName).size() >arguments.numStr) {
+                if (filesTexts.get(fileName).size() > arguments.numStr) {
                     newText = filesTexts.get(fileName).subList(0, arguments.numStr);
-                }else{
+                } else {
                     newText = filesTexts.get(fileName);
                 }
                 Collections.reverse(newText);
@@ -66,9 +66,9 @@ public class TailEdit {
         if (arguments.numChar == 0 && arguments.numStr == 0) {
             for (String fileName : arguments.inputFiles) {
                 Collections.reverse(filesTexts.get(fileName));
-                if(filesTexts.get(fileName).size() >10) {
+                if (filesTexts.get(fileName).size() > 10) {
                     newText = filesTexts.get(fileName).subList(0, 10);
-                }else{
+                } else {
                     newText = filesTexts.get(fileName);
                 }
                 Collections.reverse(newText);

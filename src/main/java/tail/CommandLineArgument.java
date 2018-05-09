@@ -27,10 +27,10 @@ public class CommandLineArgument {
         try {
             parser.parseArgument(args);
         } catch (Exception e) {
-            System.out.println("Ошибка! Неверный ввод аргументов.");
+            System.out.println("Ошибка! Неверный ввод аргументов");
             System.exit(1);
         }
-        if(inputFiles.isEmpty()){
+        if (inputFiles.isEmpty()) {
             inputFiles.add("");
         }
     }

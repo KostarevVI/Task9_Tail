@@ -9,7 +9,7 @@ import static org.junit.Assert.assertTrue;
 
 public class TailTest {
     @Test
-    public void main() throws IOException{
+    public void main() throws IOException {
 
         //-с из файла в файл
 
@@ -58,11 +58,12 @@ public class TailTest {
         old = System.out;
         ps = new PrintStream(baos);
         System.setOut(ps);
-        Tail.main(new String[]{"-c","5"});
+        Tail.main(new String[]{"-c", "5"});
         System.out.flush();
         System.setOut(old);
         ps.close();
-        String result = baos.toString().substring(baos.toString().length()-7,baos.toString().length()-2);
+        String result = baos.toString().substring(baos.toString().length() - 7, baos.toString().length() - 2);
         assertTrue(result.equals("67890"));
+
     }
 }

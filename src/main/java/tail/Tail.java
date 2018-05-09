@@ -32,8 +32,6 @@ public class Tail {
                 File outFile = new File(arguments.oFile + ".txt");
                 if (outFile.createNewFile()) {
                     System.out.println("Файл создан: " + outFile.getAbsolutePath());
-                } else {
-                    System.out.println("Не удалось создать файл.");
                 }
             }
         } catch (IOException e) {
