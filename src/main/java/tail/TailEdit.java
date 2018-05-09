@@ -25,7 +25,11 @@ public class TailEdit {
         if (arguments.numStr > 0) {
             for (String fileName : arguments.inputFiles) {
                 Collections.reverse(filesTexts.get(fileName));
-                newText = filesTexts.get(fileName).subList(0, arguments.numStr);
+                if(filesTexts.get(fileName).size() >arguments.numStr) {
+                    newText = filesTexts.get(fileName).subList(0, arguments.numStr);
+                }else{
+                    newText = filesTexts.get(fileName);
+                }
                 Collections.reverse(newText);
                 newFilesTexts.put(fileName, new ArrayList<>(newText));
                 newText.clear();
@@ -62,7 +66,11 @@ public class TailEdit {
         if (arguments.numChar == 0 && arguments.numStr == 0) {
             for (String fileName : arguments.inputFiles) {
                 Collections.reverse(filesTexts.get(fileName));
-                newText = filesTexts.get(fileName).subList(0, 10);
+                if(filesTexts.get(fileName).size() >10) {
+                    newText = filesTexts.get(fileName).subList(0, 10);
+                }else{
+                    newText = filesTexts.get(fileName);
+                }
                 Collections.reverse(newText);
                 newFilesTexts.put(fileName, new ArrayList<>(newText));
                 newText.clear();

@@ -30,5 +30,8 @@ public class CommandLineArgument {
             System.out.println("Ошибка! Неверный ввод аргументов.");
             System.exit(1);
         }
+        if(inputFiles.isEmpty()){
+            inputFiles.add("");
+        }
     }
 }
